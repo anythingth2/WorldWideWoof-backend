@@ -14,32 +14,17 @@ const userSchema = Schema({
         type: String,
         required: true
     },
-    fullName: {
-        type: String,
-    },
-    type: {
-        type: Number,
-    },
-    peopleId: {
-        type: Number,
-    },
-    tel: {
-        type: String
-    },
-    lineId: {
-        type: String
-    },
-    facebookId: {
-        type: String
-    },
+    fullName: String,
+    type: Number,
+    peopleId: Number,
+    tel: String,
+    lineId: String,
+    facebookId: String,
     //for customer
-    markDogsId: {
-        type: [Number]
-    },
+    markDogsId: [Number],
     //for dog provider
-    shopId: {
-        type: Number
-    }
+    shopId: Number
+
 });
 
 userSchema.plugin(autoIncrement.plugin, {
