@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const morgan = require('morgan');
 const db = require('./db');
 const api = require('./routes')
 const {
@@ -14,6 +14,8 @@ const app = express();
 app.use(cors({
     origin: true
 }));
+
+app.use(morgan('dev'));
 
 app.use(bodyParser.json());
 
