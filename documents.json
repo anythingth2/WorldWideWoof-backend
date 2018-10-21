@@ -1,0 +1,48 @@
+{
+    "/api": {
+        "/user": {
+            "/:id": {
+                "description": "get user data by id",
+                "req": {
+                    "method": "GET"
+                },
+                "res": {
+
+                }
+            },
+            "/": {
+                "description": "create user (Register)",
+                "req": {
+                    "method": "POST",
+                    "body": {
+                        "email": "String",
+                        "password": "String"
+                    }
+                }
+            },
+            "/login": {
+                "description": "login",
+                "req": {
+                    "method": "POST",
+                    "body": {
+                        "email": "String",
+                        "password": "String"
+                    }
+                }
+            }
+        }
+    },
+    "/test": {
+        "description": "test api",
+        "req": {
+            "method": "GET"
+        }
+    },
+    "/test": {
+        "description": "test api",
+        "req": {
+            "method": "POST"
+        }
+    }
+
+}
