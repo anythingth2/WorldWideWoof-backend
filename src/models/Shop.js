@@ -25,3 +25,5 @@ shopSchema.plugin(autoIncrement.plugin, {
     model: 'shop',
     field: 'id'
 });
+
+module.exports = mongoose.model('shop',shopSchema,'shops');
