@@ -61,8 +61,6 @@ const createUser = (req, res) => {
             });
         }
     })
-
-
 };
 module.exports = {
     getUserById: getUserById,
