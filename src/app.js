@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const api = require('./routes')
@@ -8,6 +9,9 @@ const {
 
 const app = express();
 
+app.use(cors({
+    origin: true
+}));
 app.use(bodyParser.json());
 
 app.use('/api', api);
@@ -18,13 +22,11 @@ app.get('/test', (req, res) => {
 });
 app.post('/test', (req, res) => {
     const data = req.body;
-    Object.keys(data).forEach((key)=>{
+    Object.keys(data).forEach((key) => {
         data[key] = 'Back-End Received : ' + data[key];
     });
 
     res.status(200).json(data);
 });
 
-app.listen(8080, () => {
-    console.log('starting server at 8080')
-});
+module.exports = app;
