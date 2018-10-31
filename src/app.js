@@ -18,6 +18,10 @@ app.use(cors({
 app.use(morgan('dev'));
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 
 app.use(session({
     saveUninitialized: false,
@@ -37,6 +41,7 @@ app.get('/test', (req, res) => {
 
 app.post('/test', (req, res) => {
     const data = req.body;
+    console.log(data);
     Object.keys(data).forEach((key) => {
         data[key] = 'Back-End Received : ' + data[key];
     });
