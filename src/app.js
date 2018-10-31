@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const db = require('./db');
 const api = require('./routes')
+const methodOverride = require("method-override")
 const {
     User
 } = require('./models/index');
@@ -47,5 +48,7 @@ app.post('/test', (req, res) => {
     });
     res.status(200).json(data);
 });
+
+app.use(methodOverride("_method"));
 
 module.exports = app;

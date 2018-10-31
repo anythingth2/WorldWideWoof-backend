@@ -11,6 +11,7 @@ const getDogs = (req,res) => {
         }
         else {
             res.status(200).json(dog);
+            console.log("getDogs")
         }
     });
 };
@@ -25,6 +26,7 @@ const getDogsFS = (req,res) => {
         }
         else {
             res.status(200).json(dog);
+            console.log("getDogsFS")
         }
     });
 };
@@ -39,33 +41,43 @@ const getDogsFA = (req,res) => {
         }
         else {
             res.status(200).json(dog);
+            console.log("getDogsFA")
         }
     });
 };
 //Find dog by id
 const getDogId = (req,res) => {
-    Dogs.findOne({
-        id: req.params.id
+    Dogs.findById({
+        _id: req.params.id
     }).exec((err, dog) => {
         if(err) {
             res.status(404).send();
             return;
         }
-        else {
+        if(dog) {
             res.status(200).json(dog);
+            console.log("getDogsID");
         }
+        else {
+            res.status(404).send();
+            console.log("else")
+        }
+
     });
 };
 //Delete one dog
 const deleteDog = (req,res) => {
     Dogs.deleteOne({
         id: req.params.id
-    }, function (err){
+    },  (err) => {
         if (err) {
-            res.status(404)
+            res.status(404).send()
         }
         else {
-            console.log(req.body.name + " have been delete")
+            res.status(200).json({
+                msg: "Delete complete"
+            });
+            console.log(req.body.name + " have been delete");
         }
     })
 
@@ -92,7 +104,7 @@ const createDog = (req,res) => {
         sellPrice: dogData.sellPrice,
         rentPrice: dogData.rentPrice,
         rentStatus: dogData.rentStatus
-    },function(err){
+    },(err) => {
         if(err){
             res.json({
                 msg: 'Failed to create new dog'
@@ -107,6 +119,23 @@ const createDog = (req,res) => {
     })
 }
 
+const updateDog = (req,res) => {
+    //const id = req.params.id;
+    const dogData = req.body;
+    Dogs.findByIdAndUpdate( req.params.id , dogData,(err) => {
+        if (err){
+            res.status('403')
+        }
+        else {
+            res.status('200').json({
+                msg: "Edit success",
+                id : req.body.id
+            });
+        }
+    })
+
+}
+
 
 
 module.exports = {
@@ -115,6 +144,7 @@ module.exports = {
     getDogsFA: getDogsFA,
     getDogsFS: getDogsFS,
     deleteDog: deleteDog,
-    getDogId:  getDogId
+    getDogId:  getDogId,
+    updateDog: updateDog
 }
 
