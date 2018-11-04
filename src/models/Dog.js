@@ -9,12 +9,12 @@ const dogSchema = Schema({
     name:String,
     birthDate:Date,
     breed:Number,
-    dataBreed:Number,
+    dadBreed:Number,
     momBreed:Number,
     shopId:Number,
     selledDate:Date,
     description:String,
-    pictures:String,
+    pictures:[String],
     size:Number,
     weight:Number,
     primaryColor:Number,
@@ -24,7 +24,6 @@ const dogSchema = Schema({
     sellPrice:Number,
     rentPrice:Number,
     rentStatus:String
-
 });
 
 dogSchema.plugin(autoIncrement.plugin, {

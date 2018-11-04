@@ -1,64 +1,60 @@
-const Dogs = require('../../models/Dog')
+const Dogs = require('../../models/Dog');
 
 //Get all dogs
-const getDogs = (req,res) => {
+const getDogs = (req, res) => {
     Dogs.find({
 
     }).exec((err, dog) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else {
+        } else {
             res.status(200).json(dog);
             console.log("getDogs")
         }
     });
 };
 //Find all Dogs that for Sale
-const getDogsFS = (req,res) => {
+const getDogsFS = (req, res) => {
     Dogs.find({
         type: '1' //type 1 = forSale
     }).exec((err, dog) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else {
+        } else {
             res.status(200).json(dog);
             console.log("getDogsFS")
         }
     });
 };
 //Find all dogs that for Adopt
-const getDogsFA = (req,res) => {
+const getDogsFA = (req, res) => {
     Dogs.find({
         type: '2' //type 2 = forAdopt
     }).exec((err, dog) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else {
+        } else {
             res.status(200).json(dog);
             console.log("getDogsFA")
         }
     });
 };
 //Find dog by id
-const getDogId = (req,res) => {
+const getDogId = (req, res) => {
     Dogs.findById({
         _id: req.params.id
     }).exec((err, dog) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
         }
-        if(dog) {
+        if (dog) {
             res.status(200).json(dog);
             console.log("getDogsID");
-        }
-        else {
+        } else {
             res.status(404).send();
             console.log("else")
         }
@@ -66,14 +62,13 @@ const getDogId = (req,res) => {
     });
 };
 //Delete one dog
-const deleteDog = (req,res) => {
+const deleteDog = (req, res) => {
     Dogs.deleteOne({
         id: req.params.id
-    },  (err) => {
+    }, (err) => {
         if (err) {
             res.status(404).send()
-        }
-        else {
+        } else {
             res.status(200).json({
                 msg: "Delete complete"
             });
@@ -83,13 +78,13 @@ const deleteDog = (req,res) => {
 
 }
 //Create Dog
-const createDog = (req,res) => {
+const createDog = (req, res) => {
     const dogData = req.body;
     Dogs.create({
         name: dogData.name,
         birthDate: dogData.birthDate,
         breed: dogData.breed,
-        dataBreed: dogData.dataBreed,
+        dadBreed: dogData.dadBreed,
         momBreed: dogData.momBreed,
         shopId: dogData.shopId,
         selledDate: dogData.selledDate,
@@ -104,14 +99,13 @@ const createDog = (req,res) => {
         sellPrice: dogData.sellPrice,
         rentPrice: dogData.rentPrice,
         rentStatus: dogData.rentStatus
-    },(err) => {
-        if(err){
+    }, (err) => {
+        if (err) {
             res.json({
                 msg: 'Failed to create new dog'
             });
-        }
-        else{
-            res.status('200').json({
+        } else {
+            res.status(200).json({
                 msg: "Add " + dogData.name + " sucessful",
                 id: dogData.id
             });
@@ -119,32 +113,47 @@ const createDog = (req,res) => {
     })
 }
 
-const updateDog = (req,res) => {
+const updateDog = (req, res) => {
     //const id = req.params.id;
     const dogData = req.body;
-    Dogs.findByIdAndUpdate( req.params.id , dogData,(err) => {
-        if (err){
-            res.status('403')
-        }
-        else {
+    Dogs.findByIdAndUpdate(req.params.id, dogData, (err) => {
+        if (err) {
+            res.status(403)
+        } else {
             res.status('200').json({
                 msg: "Edit success",
-                id : req.body.id
+                id: req.body.id
             });
         }
     })
 
 }
 
+const uploadDogImage = (req, res, next) => {
+    Dogs.update({
+        _id: req.params.id
+    }, {
+        $push: {
+            pictures: req.file.filename
+        }
+    }).then((dog) => {
+        if (dog == null) {
+            res.status(404).json({
+                msg: 'wrong dog id'
+            });
+        }
 
+        res.status(200).json({});
+    });
+};
 
 module.exports = {
-    getDogs:   getDogs,
+    getDogs: getDogs,
     createDog: createDog,
     getDogsFA: getDogsFA,
     getDogsFS: getDogsFS,
     deleteDog: deleteDog,
-    getDogId:  getDogId,
-    updateDog: updateDog
+    getDogId: getDogId,
+    updateDog: updateDog,
+    uploadDogImage: uploadDogImage,
 }
-
