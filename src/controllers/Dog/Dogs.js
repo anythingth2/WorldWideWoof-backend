@@ -10,9 +10,12 @@ const getDogs = (req, res) => {
             return;
         } else {
             res.status(200).json(dog);
+            res.json()
             console.log("getDogs")
         }
     });
+
+
 };
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
@@ -80,37 +83,46 @@ const deleteDog = (req, res) => {
 //Create Dog
 const createDog = (req, res) => {
     const dogData = req.body;
-    Dogs.create({
-        name: dogData.name,
-        birthDate: dogData.birthDate,
-        breed: dogData.breed,
-        dadBreed: dogData.dadBreed,
-        momBreed: dogData.momBreed,
-        shopId: dogData.shopId,
-        selledDate: dogData.selledDate,
-        description: dogData.description,
-        pictures: dogData.pictures,
-        size: dogData.size,
-        weight: dogData.weight,
-        primaryColor: dogData.primaryColor,
-        secondaryColor: dogData.secondaryColor,
-        type: dogData.type,
-        certificateId: dogData.certificateId,
-        sellPrice: dogData.sellPrice,
-        rentPrice: dogData.rentPrice,
-        rentStatus: dogData.rentStatus
-    }, (err) => {
-        if (err) {
-            res.json({
-                msg: 'Failed to create new dog'
-            });
-        } else {
-            res.status(200).json({
-                msg: "Add " + dogData.name + " sucessful",
-                id: dogData.id
-            });
-        }
-    })
+    if (!('_id' in dogData)) {
+        res.status(400).json({
+            msg: 'You have to login to Add a new Dog'
+        });
+        return
+    }
+    else {
+        Dogs.create({
+            name: dogData.name,
+            birthDate: dogData.birthDate,
+            breed: dogData.breed,
+            dadBreed: dogData.dadBreed,
+            momBreed: dogData.momBreed,
+            shopId: dogData.shopId,
+            selledDate: dogData.selledDate,
+            description: dogData.description,
+            pictures: dogData.pictures,
+            size: dogData.size,
+            weight: dogData.weight,
+            primaryColor: dogData.primaryColor,
+            secondaryColor: dogData.secondaryColor,
+            type: dogData.type,
+            certificateId: dogData.certificateId,
+            sellPrice: dogData.sellPrice,
+            rentPrice: dogData.rentPrice,
+            rentStatus: dogData.rentStatus
+        }, (err) => {
+            if (err) {
+                res.json({
+                    msg: 'Failed to create new dog'
+                });
+            } else {
+                res.status(200).json({
+                    msg: "Add " + dogData.name + " sucessful",
+                    id: dogData.id
+                });
+            }
+        })
+    }
+    
 }
 
 const updateDog = (req, res) => {
