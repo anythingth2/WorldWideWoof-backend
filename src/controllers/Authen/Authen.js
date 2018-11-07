@@ -47,7 +47,6 @@ const login = (req, res) => {
                 }
             })
         })
-
     });
 };
 

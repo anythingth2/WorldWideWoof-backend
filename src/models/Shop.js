@@ -7,6 +7,7 @@ const shopSchema = Schema({
         unique: true,
     },
     dogsId: [Number],
+    name: String,
     address: String,
     province: String,
     zipcode: Number,
