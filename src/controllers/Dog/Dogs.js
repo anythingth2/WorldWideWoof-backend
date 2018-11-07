@@ -1,5 +1,5 @@
 const Dogs = require('../../models/Dog');
-
+const Breed = require('../../models/Breed');
 //Get all dogs
 const getDogs = (req, res) => {
     Dogs.find({
@@ -17,7 +17,7 @@ const getDogs = (req, res) => {
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
     Dogs.find({
-        type: '1' //type 1 = forSale
+        type: 1 //type 1 = forSale
     }).exec((err, dog) => {
         if (err) {
             res.status(404).send();
@@ -31,7 +31,7 @@ const getDogsFS = (req, res) => {
 //Find all dogs that for Adopt
 const getDogsFA = (req, res) => {
     Dogs.find({
-        type: '2' //type 2 = forAdopt
+        type: 2 //type 2 = forAdopt
     }).exec((err, dog) => {
         if (err) {
             res.status(404).send();
@@ -134,7 +134,7 @@ const uploadDogImage = (req, res, next) => {
         _id: req.params.id
     }, {
         $push: {
-            pictures: req.file.filename
+            pictures: '/image/' + req.file.filename
         }
     }).then((dog) => {
         if (dog == null) {
@@ -142,11 +142,19 @@ const uploadDogImage = (req, res, next) => {
                 msg: 'wrong dog id'
             });
         }
-
+        console.log(dog);
         res.status(200).json({});
     });
 };
 
+const addBreed = (req, res) => {
+    const data = req.body;
+    Breed.create({
+        title: data.title
+    }).then((breed) => {
+        res.status(201).json(breed);
+    });
+};
 module.exports = {
     getDogs: getDogs,
     createDog: createDog,
@@ -156,4 +164,5 @@ module.exports = {
     getDogId: getDogId,
     updateDog: updateDog,
     uploadDogImage: uploadDogImage,
+    addBreed: addBreed
 }

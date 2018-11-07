@@ -31,5 +31,4 @@ dogSchema.plugin(autoIncrement.plugin, {
     field: 'id'
 });
 
-
 module.exports = mongoose.model('dog', dogSchema, 'dogs');

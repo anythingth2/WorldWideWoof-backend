@@ -36,7 +36,9 @@ const login = (req, res) => {
         }).then((user) => {
             bcrypt.compare(data.email + data.password, user.hash).then((b) => {
                 if (b) {
+                    console.log(user);
                     req.session.user = user;
+                    req.session.save();
                     res.status(200).json();
                 } else {
                     res.status(400).json({
