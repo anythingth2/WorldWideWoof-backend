@@ -8,8 +8,8 @@ const {
 const multer = require('multer');
 const router = Router();
 
-router.get('/forSale', Dog.getDogsFS)
-router.get('/forAdopt', Dog.getDogsFA)
+// router.get('/forSale', Dog.getDogsFS)
+// router.get('/forAdopt', Dog.getDogsFA)
 router.get('/', Dog.getDogs)
 router.get('/:id', Dog.getDogId)
 router.post('/:id/uploadImage', multer({

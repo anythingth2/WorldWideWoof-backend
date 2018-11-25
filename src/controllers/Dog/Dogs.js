@@ -1,10 +1,15 @@
-const Dogs = require('../../models/Dog');
-const Breed = require('../../models/Breed');
+const {
+    Dog,
+    Breed,
+    Shop,
+    User
+} = require('../../models')
 //Get all dogs
 const getDogs = (req, res) => {
-    Dogs.find({
 
-    }).exec((err, dog) => {
+    var filter = req.query;
+
+    Dog.find(filter).exec((err, dog) => {
         if (err) {
             res.status(404).send();
             return;
@@ -16,7 +21,7 @@ const getDogs = (req, res) => {
 };
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
-    Dogs.find({
+    Dog.find({
         type: 1 //type 1 = forSale
     }).exec((err, dog) => {
         if (err) {
@@ -30,7 +35,7 @@ const getDogsFS = (req, res) => {
 };
 //Find all dogs that for Adopt
 const getDogsFA = (req, res) => {
-    Dogs.find({
+    Dog.find({
         type: 2 //type 2 = forAdopt
     }).exec((err, dog) => {
         if (err) {
@@ -44,7 +49,7 @@ const getDogsFA = (req, res) => {
 };
 //Find dog by id
 const getDogId = (req, res) => {
-    Dogs.findById({
+    Dog.findById({
         _id: req.params.id
     }).exec((err, dog) => {
         if (err) {
@@ -63,7 +68,7 @@ const getDogId = (req, res) => {
 };
 //Delete one dog
 const deleteDog = (req, res) => {
-    Dogs.deleteOne({
+    Dog.deleteOne({
         id: req.params.id
     }, (err) => {
         if (err) {
@@ -75,48 +80,36 @@ const deleteDog = (req, res) => {
             console.log(req.body.name + " have been delete");
         }
     })
-
 }
 //Create Dog
-const createDog = (req, res) => {
+const createDog = async (req, res) => {
+    const user = req.session.user;
     const dogData = req.body;
-    Dogs.create({
+    var shop = await Shop.findById(user.shop._id);
+    Dog.create({
         name: dogData.name,
-        birthDate: dogData.birthDate,
-        breed: dogData.breed,
-        dadBreed: dogData.dadBreed,
-        momBreed: dogData.momBreed,
-        shopId: dogData.shopId,
-        selledDate: dogData.selledDate,
+        birthDate: new Date(dogData.birthDate),
         description: dogData.description,
-        pictures: dogData.pictures,
-        size: dogData.size,
         weight: dogData.weight,
-        primaryColor: dogData.primaryColor,
-        secondaryColor: dogData.secondaryColor,
-        type: dogData.type,
-        certificateId: dogData.certificateId,
         sellPrice: dogData.sellPrice,
-        rentPrice: dogData.rentPrice,
-        rentStatus: dogData.rentStatus
-    }, (err) => {
+        shop: shop
+    }, (err, dog) => {
         if (err) {
-            res.json({
+            console.log(err)
+            res.status(400).json({
                 msg: 'Failed to create new dog'
             });
         } else {
             res.status(200).json({
                 msg: "Add " + dogData.name + " sucessful",
-                id: dogData.id
             });
         }
     })
 }
 
 const updateDog = (req, res) => {
-    //const id = req.params.id;
     const dogData = req.body;
-    Dogs.findByIdAndUpdate(req.params.id, dogData, (err) => {
+    Dog.findByIdAndUpdate(req.params.id, dogData, (err) => {
         if (err) {
             res.status(403)
         } else {
@@ -129,7 +122,7 @@ const updateDog = (req, res) => {
 }
 
 const uploadDogImage = (req, res, next) => {
-    Dogs.update({
+    Dog.update({
         _id: req.params.id
     }, {
         $push: {
@@ -141,7 +134,6 @@ const uploadDogImage = (req, res, next) => {
                 msg: 'wrong dog id'
             });
         }
-        console.log(dog);
         res.status(200).json({});
     });
 };

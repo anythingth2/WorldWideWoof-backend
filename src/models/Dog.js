@@ -1,11 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const autoIncrement = require('mongoose-auto-increment');
 const Breed = require('./Breed');
 const dogSchema = Schema({
-    id: {
-        type: Number,
-    },
     name: String,
     birthDate: Date,
     breed: Breed.schema,
@@ -29,12 +25,5 @@ const dogSchema = Schema({
     rentStatus: String
 });
 
-dogSchema.plugin(autoIncrement.plugin, {
-    model: 'dog',
-    field: 'id'
-});
 
-module.exports = {
-    Dog: mongoose.model('dog', dogSchema, 'dogs'),
-    dogSchema: dogSchema
-};
+module.exports = mongoose.model('dog', dogSchema, 'dogs');

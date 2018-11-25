@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const autoIncrement = require('mongoose-auto-increment');
 const shopSchema = Schema({
-    id: {
-        type: Number,
-        unique: true,
-    },
     dogs: [{
         type: Schema.Types.ObjectId,
         ref: 'dog'
@@ -24,9 +19,6 @@ const shopSchema = Schema({
     closeTime: Date
 });
 
-shopSchema.plugin(autoIncrement.plugin, {
-    model: 'shop',
-    field: 'id'
-});
 
-module.exports =    mongoose.model('shop', shopSchema, 'shops');
+
+module.exports = mongoose.model('shop', shopSchema, 'shops');

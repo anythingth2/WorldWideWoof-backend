@@ -36,6 +36,7 @@ const login = (req, res) => {
         }).then((user) => {
             bcrypt.compare(data.email + data.password, user.hash).then((b) => {
                 if (b) {
+                    delete user.hash;
                     console.log(user);
                     req.session.user = user;
                     req.session.save();

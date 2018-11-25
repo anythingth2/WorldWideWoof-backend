@@ -25,11 +25,11 @@ app.use(bodyParser.urlencoded({
 
 
 app.use(session({
-    saveUninitialized: false,
+    saveUninitialized: true,
     secret: 'ChiChaChai',
     cookie: {
         maxAge: 24 * 60 * 60 * 1000
-    }
+    },
 }));
 app.use('/image',express.static('uploads/dogImages'));
 app.use('/api', api);
