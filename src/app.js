@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const db = require('./db');
 const api = require('./routes')
+const methodOverride = require("method-override")
 const {
     User
 } = require('./models/index');
@@ -18,6 +19,10 @@ app.use(cors({
 app.use(morgan('dev'));
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 
 app.use(session({
     saveUninitialized: false,
@@ -26,7 +31,7 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
-
+app.use('/image',express.static('uploads/dogImages'));
 app.use('/api', api);
 
 app.get('/test', (req, res) => {
@@ -37,10 +42,13 @@ app.get('/test', (req, res) => {
 
 app.post('/test', (req, res) => {
     const data = req.body;
+    console.log(data);
     Object.keys(data).forEach((key) => {
         data[key] = 'Back-End Received : ' + data[key];
     });
     res.status(200).json(data);
 });
+
+app.use(methodOverride("_method"));
 
 module.exports = app;

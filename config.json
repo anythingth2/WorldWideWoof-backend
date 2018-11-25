@@ -1,6 +1,10 @@
 {
-    "db":{
-        "host":"localhost",
-        "database":"wwwoof"
+    "db": {
+        "host": "localhost",
+        "database": "wwwoof"
+    },
+    "uploads": {
+        "destination": "uploads/",
+        "dogImages": "dogImages/"
     }
 }
