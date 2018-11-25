@@ -49,22 +49,18 @@ const createUser = (req, res) => {
     }).then((user) => {
         if (user == null) {
             bcrypt.hash(userData.email + userData.password, 10).then(async (hash) => {
-
                 var shop = await Shop.create({
-                    name: userData.shopName
+                    name: userData.shopName,
                 });
-
                 User.create({
                     email: userData.email,
                     hash: hash,
-                    shopId: shop.id
+                    shop: shop
                 }).then((user) => {
                     if (!user) {
                         res.status(500).send();
                         return;
                     }
-
-
                     res.status(200).json({
                         id: user.id,
                         email: user.email

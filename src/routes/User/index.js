@@ -6,7 +6,7 @@ const {
 
 
 const router = Router();
-router.get('/:id', User.getUserById);
+// router.get('/:id', User.getUserById);
 router.post('/', User.createUser);
 router.post('/login',Authen.login);
 

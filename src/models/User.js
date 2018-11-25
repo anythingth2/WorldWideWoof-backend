@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const autoIncrement = require('mongoose-auto-increment');
-
+const Dog = require('./Dog');
+const Shop = require('./Shop');
 const USER_TYPE = {
     customer: 0,
     dogProvider: 1
@@ -23,10 +24,12 @@ const userSchema = Schema({
     lineId: String,
     facebookId: String,
     //for customer
-    markDogsId: [Number],
+    markDogs: [{
+        type: Schema.Types.ObjectId,
+        ref: 'dog'
+    }],
     //for dog provider
-    shopId: Number
-
+    shop: Shop.schema
 });
 
 userSchema.plugin(autoIncrement.plugin, {

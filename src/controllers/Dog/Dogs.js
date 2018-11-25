@@ -126,7 +126,6 @@ const updateDog = (req, res) => {
             });
         }
     })
-
 }
 
 const uploadDogImage = (req, res, next) => {

@@ -6,7 +6,10 @@ const shopSchema = Schema({
         type: Number,
         unique: true,
     },
-    dogsId: [Number],
+    dogs: [{
+        type: Schema.Types.ObjectId,
+        ref: 'dog'
+    }],
     name: String,
     address: String,
     province: String,
@@ -15,7 +18,7 @@ const shopSchema = Schema({
     license: String,
     lat: Number,
     lng: Number,
-    picturesId: [Number],
+    pictures: [String],
     description: String,
     openTime: Date,
     closeTime: Date
@@ -26,4 +29,4 @@ shopSchema.plugin(autoIncrement.plugin, {
     field: 'id'
 });
 
-module.exports = mongoose.model('shop', shopSchema, 'shops');
+module.exports =    mongoose.model('shop', shopSchema, 'shops');
