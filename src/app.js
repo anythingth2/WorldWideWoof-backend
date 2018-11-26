@@ -31,12 +31,14 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     },
 }));
-
+console.log('HI')
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
+app.set('views','views');
 
 
 app.use('/image', express.static('uploads/dogImages'));
+app.use('/api',express.static('views/'));
 app.use('/api', api);
 
 app.get('/test', (req, res) => {

@@ -11,7 +11,7 @@ const dogSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'shop'
     },
-    
+    gender: Number,
     selledDate: Date,
     description: String,
     pictures: [String],

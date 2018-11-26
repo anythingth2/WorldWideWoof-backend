@@ -48,17 +48,57 @@ const getDogsFA = (req, res) => {
     });
 };
 //Find dog by id
-const getDogId = (req, res) => {
+const getDogId = async (req, res) => {
     Dog.findById({
         _id: req.params.id
-    }).exec((err, dog) => {
+    }).exec(async (err, dog) => {
         if (err) {
             res.status(404).send();
             return;
         }
         if (dog) {
-            res.status(200).json(dog);
-            console.log("getDogsID");
+            // dog{
+            //     name: String,
+            //      age: String,
+            //      breed: String,
+            //      dadBreed: String,
+            //      momBreed: String,
+            //      shopName: String,
+            //      phoneNumber: Number,
+            //      description: String,
+            //      pictures: [String],
+            //      size: Number,
+            //      weight: Number,
+            //      primaryColor: Number,
+            //      type: Number,
+            //      price: String,
+            //      rentStatus: String
+            //     }
+            //     similarDog:[{
+            //      name:String,
+            //      breed:String,
+            //      age:String,
+            //      price:Number
+            //     }]
+
+
+            dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
+            dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
+            dog.breed = 'testBreed';
+            dog.dadBreed = 'testBreed';
+            dog.momBreed = 'testBreed';
+            dog.shopName = dog.shop.name;
+            dog.pictures = ['https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg',
+                'https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/558828-istock-865223918.jpg',
+                'https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/13001815/Alaskan-Malamute-On-White-03-400x267.jpg'
+            ]
+            delete dog.shop;
+            dog.phoneNumber = dog.shop.tel;
+            dog.size = 'ใหญ่';
+            dog.price = dog.sellPrice;
+
+            var similarDog = await Dog.find().limit(3).exec();
+            res.render('html/dogInfo',{dog:dog,similarDog:similarDog} )
         } else {
             res.status(404).send();
             console.log("else")
