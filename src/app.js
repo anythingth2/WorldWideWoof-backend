@@ -31,13 +31,18 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     },
 }));
-app.use('/image',express.static('uploads/dogImages'));
+
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+
+
+app.use('/image', express.static('uploads/dogImages'));
 app.use('/api', api);
 
 app.get('/test', (req, res) => {
-    res.status(200).json({
-        message: 'Hello World!'
-    })
+    res.render('test', {
+        name: req.query.name
+    });
 });
 
 app.post('/test', (req, res) => {

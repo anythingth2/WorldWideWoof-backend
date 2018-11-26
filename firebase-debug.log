@@ -1,24 +1,31 @@
-[debug] [2018-11-26T01:01:38.408Z] ----------------------------------------------------------------------
-[debug] [2018-11-26T01:01:38.410Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ChiChaChai\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase functions:shell
-[debug] [2018-11-26T01:01:38.411Z] CLI Version:   4.2.1
-[debug] [2018-11-26T01:01:38.411Z] Platform:      win32
-[debug] [2018-11-26T01:01:38.411Z] Node Version:  v10.8.0
-[debug] [2018-11-26T01:01:38.411Z] Time:          Mon Nov 26 2018 08:01:38 GMT+0700 (Indochina Time)
-[debug] [2018-11-26T01:01:38.411Z] ----------------------------------------------------------------------
+[debug] [2018-11-26T02:23:43.679Z] ----------------------------------------------------------------------
+[debug] [2018-11-26T02:23:43.681Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ChiChaChai\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve --only functions
+[debug] [2018-11-26T02:23:43.682Z] CLI Version:   4.2.1
+[debug] [2018-11-26T02:23:43.682Z] Platform:      win32
+[debug] [2018-11-26T02:23:43.682Z] Node Version:  v10.8.0
+[debug] [2018-11-26T02:23:43.683Z] Time:          Mon Nov 26 2018 09:23:43 GMT+0700 (Indochina Time)
+[debug] [2018-11-26T02:23:43.683Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2018-11-26T01:01:38.421Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-11-26T01:01:38.421Z] > authorizing via signed-in user
-[debug] [2018-11-26T01:01:38.423Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/worldwidewoof-bcdfa  
+[debug] [2018-11-26T02:23:43.732Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-11-26T02:23:43.733Z] > authorizing via signed-in user
+[debug] [2018-11-26T02:23:43.739Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-11-26T02:23:43.739Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-11-26T02:23:44.024Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-26T02:23:44.066Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/worldwidewoof-bcdfa  
  
-[debug] [2018-11-26T01:01:39.500Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-26T02:23:45.634Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-26T02:23:45.635Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/worldwidewoof-bcdfa  
+ 
+[debug] [2018-11-26T02:23:47.030Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\ChiChaChai\Documents\Firebase'...
+[info] 
 [info] i  functions: Preparing to emulate functions.
-[debug] [2018-11-26T01:01:40.576Z] Fetching environment
-[debug] [2018-11-26T01:01:40.577Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/worldwidewoof-bcdfa  
+[debug] [2018-11-26T02:23:54.645Z] Fetching environment
+[debug] [2018-11-26T02:23:54.647Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/164535832326:getServerAppConfig  
  
-[debug] [2018-11-26T01:01:41.945Z] <<< HTTP RESPONSE 200
-[debug] [2018-11-26T01:01:41.946Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/164535832326:getServerAppConfig  
- 
-[debug] [2018-11-26T01:01:42.435Z] <<< HTTP RESPONSE 200
-[debug] [2018-11-26T01:01:42.436Z] Starting @google-cloud/functions-emulator
-[debug] [2018-11-26T01:01:45.223Z] Parsing function triggers
-[info] +  functions: app
+[debug] [2018-11-26T02:23:55.130Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-26T02:23:55.131Z] Starting @google-cloud/functions-emulator
+[debug] [2018-11-26T02:23:59.884Z] Parsing function triggers
+[info] +  functions: app: http://localhost:5000/worldwidewoof-bcdfa/us-central1/app
