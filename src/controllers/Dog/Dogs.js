@@ -22,7 +22,6 @@ const faker = require('faker');
 const getDogs = (req, res) => {
 
     var filter = req.query;
-
     Dog.find(filter)
         .populate('breed','title')
         .populate('momBreed','title')
@@ -107,8 +106,10 @@ const getDogId = async (req, res) => {
 };
 //Delete one dog
 const deleteDog = (req, res) => {
+    const user = req.session.user;
     Dog.deleteOne({
-        id: req.params.id
+        _id: req.params.id,
+        shop: user.shop._id
     }, (err) => {
         if (err) {
             res.status(404).send()
