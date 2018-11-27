@@ -104,6 +104,22 @@ const getDogId = async (req, res) => {
         }
     });
 };
+//View Dog Shop
+const getDogShop = (req,res) =>{
+    const user = req.session.user;
+    Dog.find({
+        shop: user.shop._id
+    }).exec((err,dog) => {
+        if(err){
+            res.status(404).send();
+            return;
+        }
+        else{
+            res.status(200).json(dog);
+
+        }
+    });
+};
 //Delete one dog
 const deleteDog = (req, res) => {
     const user = req.session.user;
@@ -309,5 +325,6 @@ module.exports = {
     addBreed: addBreed,
     imageParser: imageParser,
     mockDog: mockDog,
-    getBreed: getBreed
+    getBreed: getBreed,
+    getDogShop: getDogShop
 }

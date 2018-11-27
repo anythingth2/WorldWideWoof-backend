@@ -20,6 +20,7 @@ router.post('/new', Dog.createDog);
 router.put('/:id/update', Dog.updateDog);
 router.delete('/:id/del', Dog.deleteDog);
 router.post('/breed', Dog.addBreed);
+router.put('/dogShop', Dog.getDogShop);
 
 
 
