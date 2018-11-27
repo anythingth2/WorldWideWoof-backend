@@ -17,22 +17,26 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     storageBucket: config.firebase.bucket
 })
-
 const bucket = admin.storage().bucket();
-
+const faker = require('faker');
 const getDogs = (req, res) => {
 
     var filter = req.query;
 
-    Dog.find(filter).exec((err, dog) => {
-        if (err) {
-            res.status(404).send();
-            return;
-        } else {
-            res.status(200).json(dog);
-            console.log("getDogs")
-        }
-    });
+    Dog.find(filter)
+        .populate('breed','title')
+        .populate('momBreed','title')
+        .populate('dadBreed','title')
+        .populate('shop','name')
+        .lean()
+        .exec((err, dogs) => {
+            if (err) {
+                res.status(404).send();
+                return;
+            } else {
+                res.status(200).json(dogs);
+            }
+        });
 };
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
@@ -64,6 +68,7 @@ const getDogsFA = (req, res) => {
 };
 //Find dog by id
 const getDogId = async (req, res) => {
+
     Dog.findById({
         _id: req.params.id
     }).exec(async (err, dog) => {
@@ -241,15 +246,11 @@ const uploadDogImage = (req, res, next) => {
                 }
                 res.status(200).json({});
             });
-            
+
         });
 
     })
-
     blobStream.end(file.buffer);
-
-
-
 };
 
 const addBreed = (req, res) => {
@@ -259,6 +260,29 @@ const addBreed = (req, res) => {
     }).then((breed) => {
         res.status(201).json(breed);
     });
+};
+
+const mockDog = async (req, res, next) => {
+    var shopId = req.query.shopId;
+    console.log(shopId)
+    const countBreed = await Breed.count();
+
+    Dog.create({
+        name: faker.name.firstName(),
+        birthDate: faker.date.past(10),
+        breed: await Breed.findOne().skip(Math.floor(Math.random() * countBreed)).exec(),
+        dadBreed: await Breed.findOne().skip(Math.floor(Math.random() * countBreed)).exec(),
+        momBreed: await Breed.findOne().skip(Math.floor(Math.random() * countBreed)).exec(),
+        shop: shopId,
+        gender: Math.floor(Math.random() * 2),
+        description: faker.lorem.paragraph(),
+        size: ["เล็ก", "กลาง", "ใหญ่"][Math.floor(Math.random() * 3)],
+        weight: Math.floor(Math.random() * 10),
+    }).then((v) => {
+        res.status(200).json();
+
+    }).catch((err) => console.log(err));
+
 };
 module.exports = {
     getDogs: getDogs,
@@ -270,5 +294,6 @@ module.exports = {
     updateDog: updateDog,
     uploadDogImage: uploadDogImage,
     addBreed: addBreed,
-    imageParser: imageParser
+    imageParser: imageParser,
+    mockDog: mockDog
 }
