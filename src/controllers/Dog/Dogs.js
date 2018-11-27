@@ -3,8 +3,23 @@ const {
     Breed,
     Shop,
     User
-} = require('../../models')
-//Get all dogs
+} = require('../../models');
+const {
+    config
+} = require('./../../util');
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const Busboy = require('busboy');
+const admin = require('firebase-admin');
+const serviceAccount = require('../../../worldwidewoof-bcdfa-firebase-adminsdk-ylhyc-7b4cabfdfe.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: config.firebase.bucket
+})
+
+const bucket = admin.storage().bucket();
+
 const getDogs = (req, res) => {
 
     var filter = req.query;
@@ -57,31 +72,6 @@ const getDogId = async (req, res) => {
             return;
         }
         if (dog) {
-            // dog{
-            //     name: String,
-            //      age: String,
-            //      breed: String,
-            //      dadBreed: String,
-            //      momBreed: String,
-            //      shopName: String,
-            //      phoneNumber: Number,
-            //      description: String,
-            //      pictures: [String],
-            //      size: Number,
-            //      weight: Number,
-            //      primaryColor: Number,
-            //      type: Number,
-            //      price: String,
-            //      rentStatus: String
-            //     }
-            //     similarDog:[{
-            //      name:String,
-            //      breed:String,
-            //      age:String,
-            //      price:Number
-            //     }]
-
-
             dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
             dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
             dog.breed = 'testBreed';
@@ -97,13 +87,17 @@ const getDogId = async (req, res) => {
             dog.size = 'ใหญ่';
             dog.price = dog.sellPrice;
 
-            var similarDog = await Dog.find().limit(3).exec();
-            res.render('html/dogInfo',{dog:dog,similarDog:similarDog} )
+            var similarDogs = await Dog.find().limit(3).exec();
+            var url = config.url;
+            similarDogs.map(similarDog => similarDog.url = url + '/api/dog/' + similarDog._id);
+            res.render('html/dogInfo', {
+                dog: dog,
+                similarDog: similarDogs
+            })
         } else {
             res.status(404).send();
             console.log("else")
         }
-
     });
 };
 //Delete one dog
@@ -160,22 +154,102 @@ const updateDog = (req, res) => {
         }
     })
 }
+const imageParser = (req, res, next) => {
+    const busboy = new Busboy({
+        headers: req.headers,
+    })
+
+    var fileBuffer = new Buffer('')
+
+    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+        file.on('data', data => {
+            fileBuffer = Buffer.concat([fileBuffer, data])
+        })
+
+        file.on('end', () => {
+            const file_object = {
+                fieldname,
+                originalname: filename,
+                encoding,
+                mimetype,
+                buffer: fileBuffer,
+            }
+
+            req.file = file_object
+
+        })
+    })
+
+    req.data = {}
+
+    busboy.on('field', function (
+        fieldname,
+        val
+    ) {
+        req.data[fieldname] = val
+    })
+
+    busboy.on('finish', function () {
+        console.log('Done parsing form!')
+
+        next()
+    })
+
+    busboy.end(req.rawBody)
+}
+
 
 const uploadDogImage = (req, res, next) => {
-    Dog.update({
-        _id: req.params.id
-    }, {
-        $push: {
-            pictures: '/image/' + req.file.filename
+    var file = req.file;
+    if (!file) {
+        res.status(400).json({
+            msg: 'No image file'
+        });
+    }
+    let newFileName = `${file.originalname}_${Date.now()}`;
+
+    let fileUpload = bucket.file(newFileName);
+
+    const blobStream = fileUpload.createWriteStream({
+        metadata: {
+            contentType: file.mimetype
         }
-    }).then((dog) => {
-        if (dog == null) {
-            res.status(404).json({
-                msg: 'wrong dog id'
-            });
-        }
-        res.status(200).json({});
     });
+
+    blobStream.on('error', (error) => {
+        res.status(500).json({
+            msg: 'Something is wrong! Unable to upload at the moment.'
+        });
+    });
+
+    blobStream.on('finish', () => {
+        fileUpload.getSignedUrl({
+            action: 'read',
+            expires: Date.now() + 1000 * 60 * 60 * 365
+        }).then((url) => {
+            Dog.update({
+                _id: req.params.id
+            }, {
+                $push: {
+                    pictures: url
+                }
+            }).then((dog) => {
+                if (dog == null) {
+                    res.status(404).json({
+                        msg: 'wrong dog id'
+                    });
+                }
+                res.status(200).json({});
+            });
+            
+        });
+
+    })
+
+    blobStream.end(file.buffer);
+
+
+
 };
 
 const addBreed = (req, res) => {
@@ -195,5 +269,6 @@ module.exports = {
     getDogId: getDogId,
     updateDog: updateDog,
     uploadDogImage: uploadDogImage,
-    addBreed: addBreed
+    addBreed: addBreed,
+    imageParser: imageParser
 }
