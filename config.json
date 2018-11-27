@@ -6,5 +6,11 @@
     "uploads": {
         "destination": "uploads/",
         "dogImages": "dogImages/"
+    },
+    "url": "https://us-central1-worldwidewoof-bcdfa.cloudfunctions.net/app",
+    "firebase": {
+        "projectId": "worldwidewoof-bcdfa",
+        "bucket":"worldwidewoof-bcdfa.appspot.com"
+
     }
 }

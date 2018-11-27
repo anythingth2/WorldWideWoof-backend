@@ -4,18 +4,27 @@ const Breed = require('./Breed');
 const dogSchema = Schema({
     name: String,
     birthDate: Date,
-    breed: Breed.schema,
-    dadBreed: Breed.schema,
-    momBreed: Breed.schema,
+    breed: {
+        type: Schema.Types.ObjectId,
+        ref: 'breed'
+    },
+    dadBreed: {
+        type: Schema.Types.ObjectId,
+        ref: 'breed'
+    },
+    momBreed: {
+        type: Schema.Types.ObjectId,
+        ref: 'breed'
+    },
     shop: {
         type: Schema.Types.ObjectId,
         ref: 'shop'
     },
-    
+    gender: Number,
     selledDate: Date,
     description: String,
     pictures: [String],
-    size: Number,
+    size: String,
     weight: Number,
     primaryColor: Number,
     secondaryColor: Number,
