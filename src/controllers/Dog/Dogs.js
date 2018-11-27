@@ -146,6 +146,18 @@ const addBreed = (req, res) => {
         res.status(201).json(breed);
     });
 };
+
+const getBreed = (req,res) => {
+    Breed.find.exec((err, breed) => {
+        if(err) {
+            res.status(404).send();
+            return;
+        } else {
+            res.status(200).json(breed);
+        }
+    });
+    
+};
 module.exports = {
     getDogs: getDogs,
     createDog: createDog,
@@ -155,5 +167,6 @@ module.exports = {
     getDogId: getDogId,
     updateDog: updateDog,
     uploadDogImage: uploadDogImage,
-    addBreed: addBreed
+    addBreed: addBreed,
+    getBreed: getBreed
 }
