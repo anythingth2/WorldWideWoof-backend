@@ -23,10 +23,10 @@ const getDogs = (req, res) => {
 
     var filter = req.query;
     Dog.find(filter)
-        .populate('breed','title')
-        .populate('momBreed','title')
-        .populate('dadBreed','title')
-        .populate('shop','name')
+        .populate('breed', 'title')
+        .populate('momBreed', 'title')
+        .populate('dadBreed', 'title')
+        .populate('shop', 'name')
         .lean()
         .exec((err, dogs) => {
             if (err) {
@@ -34,11 +34,10 @@ const getDogs = (req, res) => {
                 return;
             } else {
                 res.status(200).json(dogs);
-                
             }
         });
 
-    
+
 };
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
@@ -108,18 +107,16 @@ const getDogId = async (req, res) => {
     });
 };
 //View Dog Shop
-const getDogShop = (req,res) =>{
+const getDogShop = (req, res) => {
     const user = req.session.user;
     Dog.find({
         shop: user.shop._id
-    }).exec((err,dog) => {
-        if(err){
+    }).exec((err, dog) => {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else{
+        } else {
             res.status(200).json(dog);
-
         }
     });
 };
@@ -286,14 +283,15 @@ const addBreed = (req, res) => {
 const getBreed = (req, res) => {
     console.log('Breed')
     Breed.find({
-        
-    }).exec((err, breed) => {
+
+    }).lean().exec((err, breeds) => {
         if (err) {
             res.status(500).send();
             console.log("error")
             return;
         } else {
-            res.status(200).json(breed);
+            breeds = breeds.map(breed => breed.title);
+            res.status(200).json(breeds);
             console.log("breeddddd")
         }
     });
@@ -319,7 +317,6 @@ const mockDog = async (req, res, next) => {
         res.status(200).json();
 
     }).catch((err) => console.log(err));
-
 };
 module.exports = {
     getDogs: getDogs,
