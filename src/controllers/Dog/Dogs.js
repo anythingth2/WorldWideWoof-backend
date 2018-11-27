@@ -34,8 +34,11 @@ const getDogs = (req, res) => {
                 return;
             } else {
                 res.status(200).json(dogs);
+                
             }
         });
+
+    
 };
 //Find all Dogs that for Sale
 const getDogsFS = (req, res) => {
@@ -279,16 +282,21 @@ const addBreed = (req, res) => {
     });
 };
 
-const getBreed = (req,res) => {
-    Breed.find.exec((err, breed) => {
-        if(err) {
-            res.status(404).send();
+
+const getBreed = (req, res) => {
+    console.log('Breed')
+    Breed.find({
+        
+    }).exec((err, breed) => {
+        if (err) {
+            res.status(500).send();
+            console.log("error")
             return;
         } else {
             res.status(200).json(breed);
+            console.log("breeddddd")
         }
     });
-    
 };
 
 const mockDog = async (req, res, next) => {
