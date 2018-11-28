@@ -114,7 +114,7 @@ const getDogShop = (req, res) => {
     Dog.find({
             shop: user.shop
         })
-        .select('breed birthDate name pictures')
+        .select('breed birthDate name pictures sellPrice')
         .populate('breed', 'title')
         .lean()
         .exec((err, dogs) => {
