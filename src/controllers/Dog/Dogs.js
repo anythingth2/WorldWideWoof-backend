@@ -112,10 +112,10 @@ const getDogId = async (req, res) => {
 const getDogShop = (req, res) => {
     const user = req.session.user;
     Dog.find({
-            shop: user.shop._id
+            shop: user.shop
         })
+        .select('breed birthDate name')
         .populate('breed', 'title')
-        .lean()
         .exec((err, dogs) => {
             if (err) {
                 res.status(404).send();
@@ -130,16 +130,18 @@ const getDogShop = (req, res) => {
                     // } else {
                     //     dog.breed = '-';
                     // }
-                    dog.breed = dog.breed.title || '-';
+                    if (dog.breed)
+                        dog.breed = dog.breed.title;
+                    else dog.breed = '-';
                     var diffSec = new Date() - dog.birthDate;
                     var daySec = 24 * 60 * 60 * 1000;
-    
+
                     dog.year = Math.floor(diffSec / (daySec * 30 * 12));
                     dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
-    
+
                     return dog;
                 }));
-                
+
             }
             // res.render('html/dogList',{dogs:dogs});
 
