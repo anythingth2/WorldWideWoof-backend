@@ -109,7 +109,7 @@ const getDogId = async (req, res) => {
                 return;
             }
             if (dog) {
-                var convertDog = (dog)=>{
+                var convertDog = (dog) => {
                     dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
                     dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
                     dog.breed = dog.breed.title || '-';
@@ -127,7 +127,7 @@ const getDogId = async (req, res) => {
                     return dog;
                 }
                 dog = convertDog(dog);
-                
+
 
                 var similarDogs = await Dog
                     .find()
@@ -256,7 +256,7 @@ const fillDogInfo = async (req, res) => {
     const dogId = await req.params.id;
 
     Dog.findById(dogId)
-
+        .lean()
         .exec()
         .then((dog) => {
             if (dog != null) {
@@ -284,8 +284,7 @@ const updateDog = (req, res) => {
         if (err) {
             res.status(403)
         } else {
-            res.status('200').json({
-                msg: "Edit success",
+            res.status(200).json({
                 id: req.body.id
             });
         }

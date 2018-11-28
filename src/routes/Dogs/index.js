@@ -23,7 +23,7 @@ router.post('/:id/uploadImage',
     Dog.uploadDogImage);
 router.post('/new', Dog.createDog);
 
-router.delete('/:id/del', Dog.deleteDog);
+router.delete('/:id', Dog.deleteDog);
 router.post('/breed', Dog.addBreed);
 
 
