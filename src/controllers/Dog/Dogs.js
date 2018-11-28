@@ -116,12 +116,13 @@ const getDogShop = (req, res) => {
         })
         .select('breed birthDate name pictures')
         .populate('breed', 'title')
+        .lean()
         .exec((err, dogs) => {
             if (err) {
                 res.status(404).send();
                 return;
             } else {
-                console.log(dogs)
+                // console.log(dogs)
                 res.status(200).json(dogs.map((dog) => {
                     // if (dog.breed) {
                     //     dog.breed = await Breed.findById(dog.breed).exec()
@@ -138,7 +139,7 @@ const getDogShop = (req, res) => {
 
                     dog.year = Math.floor(diffSec / (daySec * 30 * 12));
                     dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
-
+                    console.log(dog);
                     return dog;
                 }));
 
