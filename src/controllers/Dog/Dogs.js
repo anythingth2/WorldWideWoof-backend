@@ -112,32 +112,38 @@ const getDogId = async (req, res) => {
 const getDogShop = (req, res) => {
     const user = req.session.user;
     Dog.find({
-        shop: user.shop._id
-    }).exec( (err, dogs) => {
-        if (err) {
-            res.status(404).send();
-            return;
-        } else {
-            
-            if(dog.breed){
-                dog.breed = await Breed.findById(dog.breed).exec()
-                console.log(dog.breed+'\t'+typeof dog.breed);
-                dog.breed = dog.breed.title;
-             }else{
-                 dog.breed = '-';
-             }
-            
-             var diffSec = new Date() - dog.birthDate;
-             var daySec = 24 * 60 * 60 * 1000;
-
-             dog.year = Math.floor(diffSec / (daySec * 30 * 12));
-             dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
-
-             return dog;
-         }
+            shop: user.shop._id
+        })
+        .populate('breed', 'title')
+        .lean()
+        .exec((err, dogs) => {
+            if (err) {
+                res.status(404).send();
+                return;
+            } else {
+                console.log(dogs)
+                res.status(200).json(dogs.map((dog) => {
+                    // if (dog.breed) {
+                    //     dog.breed = await Breed.findById(dog.breed).exec()
+                    //     console.log(dog.breed + '\t' + typeof dog.breed);
+                    //     dog.breed = dog.breed.title;
+                    // } else {
+                    //     dog.breed = '-';
+                    // }
+                    dog.breed = dog.breed.title || '-';
+                    var diffSec = new Date() - dog.birthDate;
+                    var daySec = 24 * 60 * 60 * 1000;
+    
+                    dog.year = Math.floor(diffSec / (daySec * 30 * 12));
+                    dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
+    
+                    return dog;
+                }));
+                
+            }
             // res.render('html/dogList',{dogs:dogs});
-        }
-    });
+
+        });
 };
 //Delete one dog
 const deleteDog = (req, res) => {
@@ -159,11 +165,8 @@ const deleteDog = (req, res) => {
 //Create Dog
 const createDog = async (req, res) => {
     const user = await req.session.user;
-    console.log(await req.session);
     var shop = await Shop.findById(user.shop);
     const dogData = await req.body;
-    // var shopId = await dogData.shopId;
-    // var shop = await Shop.findById(shopId).exec();
     var diffSec = new Date() - ((Number(dogData.year) * 12 + Number(dogData.month)) * 30 * 24 * 60 * 60 * 1000);
     var birthDate = new Date(diffSec);
 
@@ -201,6 +204,30 @@ const createDog = async (req, res) => {
         }
     })
 }
+const fillDogInfo = async (req, res) => {
+    const dogId = await req.params.id;
+
+    Dog.findById(dogId)
+        .exec()
+        .then((dog) => {
+            if (dog != null) {
+                res.render('html/editDog', {
+                    dog: dog
+                });
+            } else {
+                res.status(404).json({
+                    msg: "dog not found"
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                msg: "dog error"
+            });
+        });
+
+};
+
 
 const updateDog = (req, res) => {
     const dogData = req.body;
@@ -354,7 +381,7 @@ const mockDog = async (req, res, next) => {
         size: ["เล็ก", "กลาง", "ใหญ่"][Math.floor(Math.random() * 3)],
         weight: Math.floor(Math.random() * 10),
     }).then((v) => {
-        res.status(200).json();
+        res.status(200).json({});
 
     }).catch((err) => console.log(err));
 };
@@ -365,6 +392,7 @@ module.exports = {
     getDogsFS: getDogsFS,
     deleteDog: deleteDog,
     getDogId: getDogId,
+    fillDogInfo: fillDogInfo,
     updateDog: updateDog,
     uploadDogImage: uploadDogImage,
     addBreed: addBreed,
