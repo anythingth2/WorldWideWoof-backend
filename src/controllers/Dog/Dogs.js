@@ -104,7 +104,7 @@ const getDogId = async (req, res) => {
             })
         } else {
             res.status(404).send();
-            console.log("else")
+            console.log("else");
         }
     });
 };
@@ -113,13 +113,29 @@ const getDogShop = (req, res) => {
     const user = req.session.user;
     Dog.find({
         shop: user.shop._id
-    }).lean().exec((err, dogs) => {
+    }).exec( (err, dogs) => {
         if (err) {
             res.status(404).send();
             return;
         } else {
-            // res.status(200).json(dog);
-            res.render('html/dogList',dogs);
+            
+            if(dog.breed){
+                dog.breed = await Breed.findById(dog.breed).exec()
+                console.log(dog.breed+'\t'+typeof dog.breed);
+                dog.breed = dog.breed.title;
+             }else{
+                 dog.breed = '-';
+             }
+            
+             var diffSec = new Date() - dog.birthDate;
+             var daySec = 24 * 60 * 60 * 1000;
+
+             dog.year = Math.floor(diffSec / (daySec * 30 * 12));
+             dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
+
+             return dog;
+         }
+            // res.render('html/dogList',{dogs:dogs});
         }
     });
 };
