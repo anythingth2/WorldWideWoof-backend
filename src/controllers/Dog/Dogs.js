@@ -137,8 +137,8 @@ const getDogShop = (req, res) => {
                     var diffSec = new Date() - dog.birthDate;
                     var daySec = 24 * 60 * 60 * 1000;
 
-                    dog.year = Math.floor(diffSec / (daySec * 30 * 12));
-                    dog.month = Math.floor(diffSec / (daySec * 30)) % 12;
+                    dog.year = Math.floor(diffSec / (daySec * 30 * 12)) || '-';
+                    dog.month = Math.floor(diffSec / (daySec * 30)) % 12 || '-';
                     console.log(dog);
                     return dog;
                 }));
