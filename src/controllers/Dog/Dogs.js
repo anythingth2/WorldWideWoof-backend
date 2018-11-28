@@ -119,7 +119,7 @@ const getDogShop = (req, res) => {
             return;
         } else {
             // res.status(200).json(dog);
-            res.render('html/dogList',dogs);
+            res.render('html/dogList', dogs);
         }
     });
 };
@@ -144,19 +144,35 @@ const deleteDog = (req, res) => {
 const createDog = async (req, res) => {
     const user = await req.session.user;
     console.log(await req.session);
-    var shop = await Shop.findById(user.shop._id);
+    var shop = await Shop.findById(user.shop);
     const dogData = await req.body;
     // var shopId = await dogData.shopId;
     // var shop = await Shop.findById(shopId).exec();
-    console.log(dogData);
-    Dog.create({
+    var diffSec = new Date() - ((Number(dogData.year) * 12 + Number(dogData.month)) * 30 * 24 * 60 * 60 * 1000);
+    var birthDate = new Date(diffSec);
+
+    var data = {
         name: dogData.name,
-        // birthDate: new Date(dogData.birthDate),
-        description: dogData.description,
-        weight: dogData.weight,
-        sellPrice: dogData.sellPrice,
-        shop: shop
-    }, (err, dog) => {
+        birthDate: birthDate,
+        description: dogData.description || '-',
+        weight: Number(dogData.weight),
+        size: dogData.size,
+        gender: Number(dogData.gender),
+        breed: await Breed.findOne({
+            title: dogData.breed,
+        }),
+        momBreed: await Breed.findOne({
+            title: dogData.momBreed
+        }),
+        dadBreed: await Breed.findOne({
+            title: dogData.dadBreed
+        }),
+        sellPrice: Number(dogData.sellPrice),
+        primaryColor: dogData.primaryColor,
+        shop: shop,
+    };
+    console.log(data)
+    Dog.create(data, (err, dog) => {
         if (err) {
             console.log(err)
             res.status(400).json({
@@ -164,7 +180,6 @@ const createDog = async (req, res) => {
             });
         } else {
             res.status(200).json({
-                // msg: "Add " + dogData.name + " sucessful",
                 id: dog._id
             });
         }
@@ -236,7 +251,7 @@ const uploadDogImage = (req, res, next) => {
             msg: 'No image file'
         });
     }
-    let newFileName = `${file.originalname}_${Date.now()}`;
+    let newFileName = `${file.originalname ||'untitled'}_${Date.now()}`;
 
     let fileUpload = bucket.file(newFileName);
 
