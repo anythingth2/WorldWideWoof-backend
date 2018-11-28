@@ -34,7 +34,6 @@ const getDogs = (req, res) => {
                 res.status(404).send();
                 return;
             } else {
-
                 res.status(200).render('html/forSale', {
                     shop: dogs
                 });
@@ -114,12 +113,13 @@ const getDogShop = (req, res) => {
     const user = req.session.user;
     Dog.find({
         shop: user.shop._id
-    }).exec((err, dog) => {
+    }).lean().exec((err, dogs) => {
         if (err) {
             res.status(404).send();
             return;
         } else {
-            res.status(200).json(dog);
+            // res.status(200).json(dog);
+            res.render('html/dogList',dogs);
         }
     });
 };
@@ -144,11 +144,11 @@ const deleteDog = (req, res) => {
 const createDog = async (req, res) => {
     const user = await req.session.user;
     console.log(await req.session);
-    // const dogData = await req.body;
-    // var shopId = await dogData.shopId;
     var shop = await Shop.findById(user.shop._id);
-    var shop = await Shop.findById(shopId).exec();
-
+    const dogData = await req.body;
+    // var shopId = await dogData.shopId;
+    // var shop = await Shop.findById(shopId).exec();
+    console.log(dogData);
     Dog.create({
         name: dogData.name,
         // birthDate: new Date(dogData.birthDate),
@@ -305,6 +305,7 @@ const getBreed = (req, res) => {
     });
 };
 
+
 const mockDog = async (req, res, next) => {
     var shopId = req.query.shopId;
     console.log(shopId)
@@ -339,5 +340,5 @@ module.exports = {
     imageParser: imageParser,
     mockDog: mockDog,
     getBreed: getBreed,
-    getDogShop: getDogShop
+    getDogShop: getDogShop,
 }
