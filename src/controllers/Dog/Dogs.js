@@ -23,7 +23,7 @@ const blankImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No
 
 const getDogsLanding = async (req, res) => {
     var dogsForSale = await Dog.find({
-        type: 1
+        
     }).limit(3).populate('breed', 'title').lean().exec();
 
     var dogsForAdopt = await Dog.find({
@@ -38,10 +38,10 @@ const getDogsLanding = async (req, res) => {
 
         dog.year = Math.floor(diffSec / (daySec * 30 * 12)) || '-';
         dog.month = Math.floor(diffSec / (daySec * 30)) % 12 || '-';
+        return dog;
     };
-
     res.render('html/landingPage', {
-        dogsForSale: dogsForSale
+        dogsForSale: dogsForSale.map(mapCallback)
         // dogsForAdopt: dogsForAdopt
     });
 
