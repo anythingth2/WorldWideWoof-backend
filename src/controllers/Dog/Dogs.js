@@ -23,15 +23,14 @@ const blankImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No
 
 const getDogsLanding = async (req, res) => {
     var dogsForSale = await Dog.find({
-        
+
     }).limit(3).populate('breed', 'title').lean().exec();
 
-    var dogsForAdopt = await Dog.find({
-        type: 2
-    }).limit(3).populate('breed', 'title').lean().exec();
+
 
     var mapCallback = (dog) => {
         dog.picture = dog.pictures[0] || blankImage;
+        dog.breed = dog.breed.title || '-'
         dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
         var diffSec = new Date() - dog.birthDate;
         var daySec = 24 * 60 * 60 * 1000;
@@ -42,7 +41,6 @@ const getDogsLanding = async (req, res) => {
     };
     res.render('html/landingPage', {
         dogsForSale: dogsForSale.map(mapCallback)
-        // dogsForAdopt: dogsForAdopt
     });
 
 };
@@ -62,7 +60,7 @@ const getDogsForSale = (req, res) => {
                 return;
             } else {
                 res.status(200).render('html/forSale', {
-                    shop: dogs
+                    dogs: dogs
                 });
             }
         });
