@@ -8,6 +8,7 @@ const {
 const router = Router();
 // router.get('/:id', User.getUserById);
 router.post('/', User.createUser);
-router.post('/login',Authen.login);
+router.post('/login', Authen.login);
+router.get('/verify', Authen.verify);
 
 module.exports = router;

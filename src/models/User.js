@@ -24,7 +24,10 @@ const userSchema = Schema({
         ref: 'dog'
     }],
     //for dog provider
-    shop: Shop.schema
+    shop: {
+        type: Schema.Types.ObjectId,
+        ref: 'shop'
+    }
 });
 
 

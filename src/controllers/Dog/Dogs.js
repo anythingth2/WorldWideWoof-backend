@@ -22,6 +22,7 @@ const faker = require('faker');
 const getDogs = (req, res) => {
 
     var filter = req.query;
+
     Dog.find(filter)
         .populate('breed', 'title')
         .populate('momBreed', 'title')
@@ -33,10 +34,12 @@ const getDogs = (req, res) => {
                 res.status(404).send();
                 return;
             } else {
-                res.status(200).json(dogs);
+
+                res.status(200).render('html/forSale', {
+                    shop: dogs
+                });
             }
         });
-
 
 };
 //Find all Dogs that for Sale
@@ -139,12 +142,16 @@ const deleteDog = (req, res) => {
 }
 //Create Dog
 const createDog = async (req, res) => {
-    const user = req.session.user;
-    const dogData = req.body;
+    const user = await req.session.user;
+    console.log(await req.session);
+    // const dogData = await req.body;
+    // var shopId = await dogData.shopId;
     var shop = await Shop.findById(user.shop._id);
+    var shop = await Shop.findById(shopId).exec();
+
     Dog.create({
         name: dogData.name,
-        birthDate: new Date(dogData.birthDate),
+        // birthDate: new Date(dogData.birthDate),
         description: dogData.description,
         weight: dogData.weight,
         sellPrice: dogData.sellPrice,
@@ -157,7 +164,8 @@ const createDog = async (req, res) => {
             });
         } else {
             res.status(200).json({
-                msg: "Add " + dogData.name + " sucessful",
+                // msg: "Add " + dogData.name + " sucessful",
+                id: dog._id
             });
         }
     })
