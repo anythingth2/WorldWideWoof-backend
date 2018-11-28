@@ -19,7 +19,34 @@ admin.initializeApp({
 })
 const bucket = admin.storage().bucket();
 const faker = require('faker');
-const getDogs = (req, res) => {
+const blankImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
+
+const getDogsLanding = async (req, res) => {
+    var dogsForSale = await Dog.find({
+        type: 1
+    }).limit(3).populate('breed', 'title').lean().exec();
+
+    var dogsForAdopt = await Dog.find({
+        type: 2
+    }).limit(3).populate('breed', 'title').lean().exec();
+
+    var mapCallback = (dog) => {
+        dog.picture = dog.pictures[0] || blankImage;
+        dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
+        var diffSec = new Date() - dog.birthDate;
+        var daySec = 24 * 60 * 60 * 1000;
+
+        dog.year = Math.floor(diffSec / (daySec * 30 * 12)) || '-';
+        dog.month = Math.floor(diffSec / (daySec * 30)) % 12 || '-';
+    };
+
+    res.render('html/landingPage', {
+        dogsForSale: dogsForSale
+        // dogsForAdopt: dogsForAdopt
+    });
+
+};
+const getDogsForSale = (req, res) => {
 
     var filter = req.query;
 
@@ -41,34 +68,34 @@ const getDogs = (req, res) => {
         });
 
 };
-//Find all Dogs that for Sale
-const getDogsFS = (req, res) => {
-    Dog.find({
-        type: 1 //type 1 = forSale
-    }).exec((err, dog) => {
-        if (err) {
-            res.status(404).send();
-            return;
-        } else {
-            res.status(200).json(dog);
-            console.log("getDogsFS")
-        }
-    });
-};
-//Find all dogs that for Adopt
-const getDogsFA = (req, res) => {
-    Dog.find({
-        type: 2 //type 2 = forAdopt
-    }).exec((err, dog) => {
-        if (err) {
-            res.status(404).send();
-            return;
-        } else {
-            res.status(200).json(dog);
-            console.log("getDogsFA")
-        }
-    });
-};
+// //Find all Dogs that for Sale
+// const getDogsFS = (req, res) => {
+//     Dog.find({
+//         type: 1 //type 1 = forSale
+//     }).exec((err, dog) => {
+//         if (err) {
+//             res.status(404).send();
+//             return;
+//         } else {
+//             res.status(200).json(dog);
+//             console.log("getDogsFS")
+//         }
+//     });
+// };
+// //Find all dogs that for Adopt
+// const getDogsFA = (req, res) => {
+//     Dog.find({
+//         type: 2 //type 2 = forAdopt
+//     }).exec((err, dog) => {
+//         if (err) {
+//             res.status(404).send();
+//             return;
+//         } else {
+//             res.status(200).json(dog);
+//             console.log("getDogsFA")
+//         }
+//     });
+// };
 //Find dog by id
 const getDogId = async (req, res) => {
 
@@ -211,6 +238,7 @@ const fillDogInfo = async (req, res) => {
     const dogId = await req.params.id;
 
     Dog.findById(dogId)
+
         .exec()
         .then((dog) => {
             if (dog != null) {
@@ -389,10 +417,11 @@ const mockDog = async (req, res, next) => {
     }).catch((err) => console.log(err));
 };
 module.exports = {
-    getDogs: getDogs,
+    getDogsLanding: getDogsLanding,
+    getDogsForSale: getDogsForSale,
     createDog: createDog,
-    getDogsFA: getDogsFA,
-    getDogsFS: getDogsFS,
+    // getDogsFA: getDogsFA,
+    // getDogsFS: getDogsFS,
     deleteDog: deleteDog,
     getDogId: getDogId,
     fillDogInfo: fillDogInfo,
