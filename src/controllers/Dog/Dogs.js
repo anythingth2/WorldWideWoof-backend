@@ -98,40 +98,60 @@ const getDogsForSale = (req, res) => {
 const getDogId = async (req, res) => {
 
     Dog.findById({
-        _id: req.params.id
-    }).exec(async (err, dog) => {
-        if (err) {
-            res.status(404).send();
-            return;
-        }
-        if (dog) {
-            dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
-            dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
-            dog.breed = 'testBreed';
-            dog.dadBreed = 'testBreed';
-            dog.momBreed = 'testBreed';
-            dog.shopName = dog.shop.name;
-            dog.pictures = ['https://www.akc.org/wp-content/themes/akc/component-library/assets//img/welcome.jpg',
-                'https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/558828-istock-865223918.jpg',
-                'https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/13001815/Alaskan-Malamute-On-White-03-400x267.jpg'
-            ]
-            delete dog.shop;
-            dog.phoneNumber = dog.shop.tel;
-            dog.size = 'ใหญ่';
-            dog.price = dog.sellPrice;
+            _id: req.params.id
+        }).populate('breed', 'title')
+        .populate('momBreed', 'title')
+        .populate('dadBreed', 'title')
+        .populate('shop', 'name')
+        .lean().exec(async (err, dog) => {
+            if (err) {
+                res.status(404).send();
+                return;
+            }
+            if (dog) {
+                var convertDog = (dog)=>{
+                    dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
+                    dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
+                    dog.breed = dog.breed.title || '-';
+                    dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
+                    dog.dadBreed = dog.dadBreed.title || '-';
+                    dog.momBreed = dog.momBreed.title || '-';
+                    for (var i = 0; i < 3; i++) {
+                        dog.pictures[i] = dog.pictures[i] || blankImage;
+                    }
+                    dog.primaryColor = dog.primaryColor || '-';
+                    dog.shopName = dog.shop.name;
+                    dog.phoneNumber = dog.shop.tel;
+                    dog.size = 'ใหญ่';
+                    dog.price = dog.sellPrice;
+                    return dog;
+                }
+                dog = convertDog(dog);
+                
 
-            var similarDogs = await Dog.find().limit(3).exec();
-            var url = config.url;
-            similarDogs.map(similarDog => similarDog.url = url + '/api/dog/' + similarDog._id);
-            res.render('html/dogInfo', {
-                dog: dog,
-                similarDog: similarDogs
-            })
-        } else {
-            res.status(404).send();
-            console.log("else");
-        }
-    });
+                var similarDogs = await Dog
+                    .find()
+                    .limit(3)
+                    .populate('breed', 'title')
+                    .populate('momBreed', 'title')
+                    .populate('dadBreed', 'title')
+                    .populate('shop', 'name')
+                    .lean()
+                    .exec();
+
+
+                var url = config.url;
+                similarDogs = similarDogs.map(convertDog);
+                console.log(similarDogs);
+                res.render('html/dogInfo', {
+                    dog: dog,
+                    similarDogs: similarDogs
+                })
+            } else {
+                res.status(404).send();
+                console.log("else");
+            }
+        });
 };
 //View Dog Shop
 const getDogShop = (req, res) => {
