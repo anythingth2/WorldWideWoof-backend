@@ -1,6 +1,7 @@
 const Shop = require('../../models/Shop');
 
 const getShopInfo = (req, res) => {
+    
     Shop.find({
         _id: req.params._id
 

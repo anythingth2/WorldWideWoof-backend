@@ -112,10 +112,10 @@ const getDogId = async (req, res) => {
                 var convertDog = (dog) => {
                     dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
                     dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
-                    dog.breed = dog.breed.title || '-';
+                    dog.breed = dog.breed ? dog.breed.title : '-';
                     dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
-                    dog.dadBreed = dog.dadBreed.title || '-';
-                    dog.momBreed = dog.momBreed.title || '-';
+                    dog.dadBreed = dog.dadBreed ? dog.dadBreed.title : '-';
+                    dog.momBreed = dog.momBreed ? dog.momBreed.title : '-';
                     for (var i = 0; i < 3; i++) {
                         dog.pictures[i] = dog.pictures[i] || blankImage;
                     }
@@ -250,10 +250,29 @@ const fillDogInfo = async (req, res) => {
     const dogId = await req.params.id;
 
     Dog.findById(dogId)
+        .populate('breed', 'title')
+        .populate('momBreed', 'title')
+        .populate('dadBreed', 'title')
         .lean()
         .exec()
         .then((dog) => {
             if (dog != null) {
+
+                dog.breed = dog.breed ? dog.breed.title : '-';
+                dog.dadBreed = dog.dadBreed ? dog.dadBreed.title : '-';
+                dog.momBreed = dog.momBreed ? dog.momBreed.title : '-';
+                switch (dog.size) {
+                    case 'เล็ก':
+                        dog.size = 0;
+                        break;
+                    case 'กลาง':
+                        dog.size = 1;
+                        break;
+                    case 'ใหญ่':
+                        dog.size = 2;
+                        break;
+                }
+                console.log(dog);
                 res.render('html/editDog', {
                     dog: dog
                 });
