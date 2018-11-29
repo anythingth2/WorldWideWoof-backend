@@ -176,6 +176,8 @@ const getDogShop = (req, res) => {
                     // } else {
                     //     dog.breed = '-';
                     // }
+
+                    dog.pictures[0] = dog.pictures[0] || blankImage;
                     if (dog.breed)
                         dog.breed = dog.breed.title;
                     else dog.breed = '-';

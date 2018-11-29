@@ -13,7 +13,7 @@ const router = Router();
 router.get('/mockDog', Dog.mockDog);
 router.get('/getBreed', Dog.getBreed);
 router.get('/dogShop', Dog.getDogShop);
-router.get('/landing',Dog.getDogsLanding);
+router.get('/landing', Dog.getDogsLanding);
 router.get('/forSale', Dog.getDogsForSale);
 router.get('/:id', Dog.getDogId);
 router.get('/:id/update', Dog.fillDogInfo);
@@ -22,7 +22,6 @@ router.post('/:id/uploadImage',
     Dog.imageParser,
     Dog.uploadDogImage);
 router.post('/new', Dog.createDog);
-
 router.delete('/:id', Dog.deleteDog);
 router.post('/breed', Dog.addBreed);
 
