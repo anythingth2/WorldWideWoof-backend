@@ -1,16 +1,14 @@
 const Shop = require('../../models/Shop');
 
 const getShopInfo = (req, res) => {
-    
     Shop.find({
         _id: req.params._id
 
     }).exec((err, shop) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else{
+        } else {
             res.status(200).json(shop);
         }
     });
@@ -34,11 +32,10 @@ const getShopList = (req, res) => {
     Shop.find({
 
     }).exec((err, shop) => {
-        if(err) {
+        if (err) {
             res.status(404).send();
             return;
-        }
-        else{
+        } else {
             res.status(200).json(shop);
         }
     });

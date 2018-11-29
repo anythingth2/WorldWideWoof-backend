@@ -261,6 +261,11 @@ const fillDogInfo = async (req, res) => {
                 dog.breed = dog.breed ? dog.breed.title : '-';
                 dog.dadBreed = dog.dadBreed ? dog.dadBreed.title : '-';
                 dog.momBreed = dog.momBreed ? dog.momBreed.title : '-';
+                var diffSec = new Date() - dog.birthDate;
+                var daySec = 24 * 60 * 60 * 1000;
+
+                dog.year = Math.floor(diffSec / (daySec * 30 * 12)) || '-';
+                dog.month = Math.floor(diffSec / (daySec * 30)) % 12 || '-';
                 switch (dog.size) {
                     case 'เล็ก':
                         dog.size = 0;
