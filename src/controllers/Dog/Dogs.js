@@ -297,13 +297,21 @@ const fillDogInfo = async (req, res) => {
 
 
 const updateDog = (req, res) => {
-    const dogData = req.body;
-    Dog.findByIdAndUpdate(req.params.id, dogData, (err) => {
+    const dog = req.body;
+    dog.size = ['เล็ก','กลาง','ใหญ่'][Number(dog.size)];
+    dog.weight = Number(dog.weight);
+    dog.gender = Number(dog.gender);
+    
+    var diffSec = new Date() - ((Number(dog.year) * 12 + Number(dog.month)) * 30 * 24 * 60 * 60 * 1000);
+    dog.birthDate = new Date(diffSec);
+    dog.sellPrice = Number(dog.sellPrice);
+    
+    Dog.findByIdAndUpdate(req.params.id, dog, (err) => {
         if (err) {
-            res.status(403)
+            res.status(403);
         } else {
             res.status(200).json({
-                id: req.body.id
+                // id: req.body.id
             });
         }
     })

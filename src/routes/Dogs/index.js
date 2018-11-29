@@ -18,7 +18,7 @@ router.get('/landing', Dog.getDogsLanding);
 router.get('/forSale', Dog.getDogsForSale);
 router.get('/:id', Dog.getDogId);
 router.use('/', Auth.verify);
-router.get('/:id/update', Auth.verify, Dog.fillDogInfo);
+router.get('/:id/update',  Dog.fillDogInfo);
 router.patch('/:id/update', Dog.updateDog);
 router.post('/:id/uploadImage',
     Dog.imageParser,
