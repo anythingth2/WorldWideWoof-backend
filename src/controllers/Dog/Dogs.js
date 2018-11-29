@@ -169,14 +169,6 @@ const getDogShop = (req, res) => {
             } else {
                 // console.log(dogs)
                 res.status(200).json(dogs.map((dog) => {
-                    // if (dog.breed) {
-                    //     dog.breed = await Breed.findById(dog.breed).exec()
-                    //     console.log(dog.breed + '\t' + typeof dog.breed);
-                    //     dog.breed = dog.breed.title;
-                    // } else {
-                    //     dog.breed = '-';
-                    // }
-
                     dog.pictures[0] = dog.pictures[0] || blankImage;
                     if (dog.breed)
                         dog.breed = dog.breed.title;
