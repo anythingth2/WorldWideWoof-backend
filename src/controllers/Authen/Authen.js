@@ -53,19 +53,23 @@ const login = (req, res) => {
     });
 };
 
-const verify = (req, res) => {
+const verify = (req, res, next) => {
 
     const session = req.session;
     console.log(session);
     const user = session.user;
-    if (user != null)
-        res.status(200).json({
-            result: true
-        })
-    else
-        res.status(404).json({
-            result: false
-        });
+    if (user != null) {
+        next();
+        
+        // res.status(200).json({
+        //     result: true
+        // })
+    } else {
+        // res.status(404).json({
+        //     result: false
+        // });
+        res.send('<script>alert("โปรดล็อกอินก่อนนะคะ")</script>');
+    }
 };
 
 module.exports = {

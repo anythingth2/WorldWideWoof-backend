@@ -112,10 +112,10 @@ const getDogId = async (req, res) => {
                 var convertDog = (dog) => {
                     dog.age = Math.ceil((new Date() - dog.birthDate) / (1000 * 60 * 60 * 24));
                     dog.age = '' + Math.floor(dog.age / 365) + ' ปี ' + Math.floor((dog.age % 365) / 12) + ' เดือน';
-                    dog.breed = dog.breed.title || '-';
+                    dog.breed = dog.breed ? dog.breed.title : '-';
                     dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
-                    dog.dadBreed = dog.dadBreed.title || '-';
-                    dog.momBreed = dog.momBreed.title || '-';
+                    dog.dadBreed = dog.dadBreed ? dog.dadBreed.title : '-';
+                    dog.momBreed = dog.momBreed ? dog.momBreed.title : '-';
                     for (var i = 0; i < 3; i++) {
                         dog.pictures[i] = dog.pictures[i] || blankImage;
                     }
@@ -173,14 +173,6 @@ const getDogShop = (req, res) => {
             } else {
                 // console.log(dogs)
                 res.status(200).json(dogs.map((dog) => {
-                    // if (dog.breed) {
-                    //     dog.breed = await Breed.findById(dog.breed).exec()
-                    //     console.log(dog.breed + '\t' + typeof dog.breed);
-                    //     dog.breed = dog.breed.title;
-                    // } else {
-                    //     dog.breed = '-';
-                    // }
-
                     dog.pictures[0] = dog.pictures[0] || blankImage;
                     if (dog.breed)
                         dog.breed = dog.breed.title;
@@ -262,10 +254,34 @@ const fillDogInfo = async (req, res) => {
     const dogId = await req.params.id;
 
     Dog.findById(dogId)
+        .populate('breed', 'title')
+        .populate('momBreed', 'title')
+        .populate('dadBreed', 'title')
         .lean()
         .exec()
         .then((dog) => {
             if (dog != null) {
+
+                dog.breed = dog.breed ? dog.breed.title : '-';
+                dog.dadBreed = dog.dadBreed ? dog.dadBreed.title : '-';
+                dog.momBreed = dog.momBreed ? dog.momBreed.title : '-';
+                var diffSec = new Date() - dog.birthDate;
+                var daySec = 24 * 60 * 60 * 1000;
+
+                dog.year = Math.floor(diffSec / (daySec * 30 * 12)) || '-';
+                dog.month = Math.floor(diffSec / (daySec * 30)) % 12 || '-';
+                switch (dog.size) {
+                    case 'เล็ก':
+                        dog.size = 0;
+                        break;
+                    case 'กลาง':
+                        dog.size = 1;
+                        break;
+                    case 'ใหญ่':
+                        dog.size = 2;
+                        break;
+                }
+                console.log(dog);
                 res.render('html/editDog', {
                     dog: dog
                 });
@@ -285,13 +301,21 @@ const fillDogInfo = async (req, res) => {
 
 
 const updateDog = (req, res) => {
-    const dogData = req.body;
-    Dog.findByIdAndUpdate(req.params.id, dogData, (err) => {
+    const dog = req.body;
+    dog.size = ['เล็ก','กลาง','ใหญ่'][Number(dog.size)];
+    dog.weight = Number(dog.weight);
+    dog.gender = Number(dog.gender);
+    
+    var diffSec = new Date() - ((Number(dog.year) * 12 + Number(dog.month)) * 30 * 24 * 60 * 60 * 1000);
+    dog.birthDate = new Date(diffSec);
+    dog.sellPrice = Number(dog.sellPrice);
+    
+    Dog.findByIdAndUpdate(req.params.id, dog, (err) => {
         if (err) {
-            res.status(403)
+            res.status(403);
         } else {
             res.status(200).json({
-                id: req.body.id
+                // id: req.body.id
             });
         }
     })
