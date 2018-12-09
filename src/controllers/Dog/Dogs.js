@@ -119,6 +119,7 @@ const getDogId = async (req, res) => {
                     for (var i = 0; i < 3; i++) {
                         dog.pictures[i] = dog.pictures[i] || blankImage;
                     }
+                    dog.picture = dog.pictures[0];
                     dog.primaryColor = dog.primaryColor || '-';
                     dog.shopName = dog.shop.name;
                     dog.phoneNumber = dog.shop.tel;
@@ -128,9 +129,12 @@ const getDogId = async (req, res) => {
                 }
                 dog = convertDog(dog);
 
+                var count = await Dog.count();
+                
 
                 var similarDogs = await Dog
                     .find()
+                    // .skip()
                     .limit(3)
                     .populate('breed', 'title')
                     .populate('momBreed', 'title')
@@ -200,7 +204,7 @@ const deleteDog = (req, res) => {
     const user = req.session.user;
     Dog.deleteOne({
         _id: req.params.id,
-        shop: user.shop._id
+        // shop: user.shop._id
     }, (err) => {
         if (err) {
             res.status(404).send()

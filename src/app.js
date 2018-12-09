@@ -3,6 +3,8 @@ const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const glob = require('glob');
+const path = require('path');
 const db = require('./db');
 const api = require('./routes')
 const methodOverride = require("method-override")
@@ -43,6 +45,11 @@ app.set('views', 'views');
 app.use('/image', express.static('uploads/dogImages'));
 app.use('/api', express.static('views/'));
 app.use('/api', api);
+app.use('/static', (req, res) => {
+    glob(process.cwd() + '/' + req.url + '/*', (err, files) => {
+        res.send(files.reduce((accumulator, current) => accumulator + current + '<br></br>', ''));
+    });
+});
 
 app.get('/test', (req, res) => {
     res.render('test', {
