@@ -32,7 +32,7 @@ const getDogsLanding = async (req, res) => {
 
     var mapCallback = (dog) => {
         dog.picture = dog.pictures[0] || blankImage;
-        dog.breed = dog.breed.title || '-'
+        dog.breed = dog.breed ? dog.breed.title : '-';
         dog.gender = dog.gender == 0 ? 'ตัวผู้' : 'ตัวเมีย';
         var diffSec = new Date() - dog.birthDate;
         var daySec = 24 * 60 * 60 * 1000;
